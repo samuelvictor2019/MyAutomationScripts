@@ -1,0 +1,5 @@
+sudo mysqlcheck --user=root --password=secret-pass  --extended --auto-repair --all-databases;
+
+sudo mysqlcheck --user=root --password=secret-pass  --analyze _e4154c57cfa36d2c
+
+sudo mysqlcheck --user=root --password=secret-pass _e4154c57cfa36d2c
