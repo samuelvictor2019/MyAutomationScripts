@@ -1,0 +1,110 @@
+<!--path to file = apps/erpnext/erpnext/templates/includes/cart/cart_address.html-->
+<div class="mb-3 frappe-card p-5" data-section="shipping-address">
+    <div class="d-flex">
+        <div class="col-6 address-header"><h6>{{ _("Shipping Address (Pickup Location)") }}</h6></div>
+    </div>
+    <hr>
+    <!-- Existing Pickup Locations -->
+    <div class="row no-gutters" data-fieldname="pickup_location">
+        <div class="w-100 address-container" data-address-name="location_1" data-address-type="shipping">
+            <label>
+                <input type="radio" name="pickup_location" value="location_1">
+                Pickup Location 1
+            </label>
+        </div>
+    </div>
+    <div class="row no-gutters" data-fieldname="pickup_location">
+        <div class="w-100 address-container" data-address-name="location_2" data-address-type="shipping">
+            <label>
+                <input type="radio" name="pickup_location" value="location_2">
+                Pickup Location 2
+            </label>
+        </div>
+    </div>
+    <div class="row no-gutters" data-fieldname="pickup_location">
+        <div class="w-100 address-container" data-address-name="location_3" data-address-type="shipping">
+            <label>
+                <input type="radio" name="pickup_location" value="location_3">
+                Pickup Location 3
+            </label>
+        </div>
+    </div>
+    <div class="row no-gutters" data-fieldname="pickup_location">
+        <div class="w-100 address-container" data-address-name="location_4" data-address-type="shipping">
+            <label>
+                <input type="radio" name="pickup_location" value="location_4">
+                Pickup Location 4
+            </label>
+        </div>
+    </div>
+    <!-- Option to add a new address -->
+    <div class="row no-gutters" data-fieldname="pickup_location">
+        <div class="w-100 address-container">
+            <label>
+                <input type="radio" name="pickup_location" value="new_address">
+                Want your delivery outside of any of the pickup locations? Enter your address below
+		and we'll follow up with you to have it delivered to your address
+            </label>
+        </div>
+    </div>
+    <!-- Input for new address, initially hidden -->
+    <div class="row no-gutters" id="new_address_input" style="display:none;">
+        <div class="w-100">
+            <input type="text" id="new_address" class="form-control" placeholder="Enter New Address">
+        </div>
+    </div>
+</div>
+
+<!-- Billing Address Section -->
+<div class="checkbox ml-1 mb-2">
+    <label for="input_same_billing">
+        <input type="checkbox" class="product-filter" id="input_same_billing" checked style="width: 14px !important">
+        <span class="label-area font-md">{{ _('Billing Address is same as Shipping Address') }}</span>
+    </label>
+</div>
+
+<div class="mb-3 frappe-card p-5" data-section="billing-address" style="display:none;">
+    <div class="d-flex">
+        <div class="col-6 address-header"><h6>{{ _("Billing Address") }}</h6></div>
+    </div>
+    <hr>
+    <!-- Billing address will follow the same pattern as shipping if needed -->
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const pickupLocations = document.getElementsByName('pickup_location');
+    const newAddressInput = document.getElementById('new_address_input');
+    const newAddressField = document.getElementById('new_address');
+
+    pickupLocations.forEach(location => {
+        location.addEventListener('change', function() {
+            if (this.value === 'new_address') {
+                newAddressInput.style.display = 'block';
+            } else {
+                newAddressInput.style.display = 'none';
+            }
+        });
+    });
+
+    // Function to capture the selected address or new address and add to order details
+    function getAddressDetails() {
+        const selectedLocation = document.querySelector('input[name="pickup_location"]:checked').value;
+        let address = '';
+
+        if (selectedLocation === 'new_address') {
+            address = newAddressField.value;
+        } else {
+            address = document.querySelector(`.address-container[data-address-name="${selectedLocation}"]`).innerText.trim();
+        }
+
+        // Add this address to the order details
+        // Here you would include your logic to attach this address to the order
+        console.log("Selected Address: ", address);
+        // Example: updateOrderDetails(address);
+    }
+
+    // Call getAddressDetails when submitting the form or adding to the order
+    // Example: document.getElementById('submit_button').addEventListener('click', getAddressDetails);
+});
+</script>

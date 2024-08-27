@@ -1,0 +1,128 @@
+<div class="mb-3 frappe-card p-5" data-section="shipping-address">
+    <div class="d-flex">
+        <div class="col-6 address-header"><h6>{{ _("Shipping Address (Pickup Location)") }}</h6></div>
+    </div>
+    <hr>
+    <div class="row no-gutters" data-fieldname="pickup_location">
+        <div class="w-100 address-container" data-address-name="location_1" data-address-type="shipping">
+            <label>
+                <input type="radio" name="pickup_location" value="location_1">
+                Pickup Location 1
+            </label>
+        </div>
+    </div>
+    <div class="row no-gutters" data-fieldname="pickup_location">
+        <div class="w-100 address-container" data-address-name="location_2" data-address-type="shipping">
+            <label>
+                <input type="radio" name="pickup_location" value="location_2">
+                Pickup Location 2
+            </label>
+        </div>
+    </div>
+    <div class="row no-gutters" data-fieldname="pickup_location">
+        <div class="w-100 address-container" data-address-name="location_3" data-address-type="shipping">
+            <label>
+                <input type="radio" name="pickup_location" value="location_3">
+                Pickup Location 3
+            </label>
+        </div>
+    </div>
+    <div class="row no-gutters" data-fieldname="pickup_location">
+        <div class="w-100 address-container" data-address-name="location_4" data-address-type="shipping">
+            <label>
+                <input type="radio" name="pickup_location" value="location_4">
+                Pickup Location 4
+            </label>
+        </div>
+    </div>
+    <div class="row no-gutters" data-fieldname="pickup_location">
+        <div class="w-100 address-container">
+            <label>
+                <input type="radio" name="pickup_location" value="new_address">
+                Add New Address
+            </label>
+        </div>
+    </div>
+    <div id="new_address_input" class="mt-3" style="display:none;">
+        <input type="text" id="new_address" class="form-control" placeholder="Enter new address">
+    </div>
+</div>
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const pickupLocations = document.getElementsByName('pickup_location');
+    const newAddressInputContainer = document.getElementById('new_address_input');
+    const newAddressField = document.getElementById('new_address');
+    let selectedAddress = '';  // Variable to hold the final selected or entered address
+
+    // Function to handle address selection
+    function handleAddressSelection() {
+        const selectedLocation = document.querySelector('input[name="pickup_location"]:checked').value;
+        
+        if (selectedLocation === 'new_address') {
+            newAddressInputContainer.style.display = 'block';
+            selectedAddress = '';  // Reset selected address for new entry
+        } else {
+            newAddressInputContainer.style.display = 'none';
+            selectedAddress = document.querySelector(`.address-container[data-address-name="${selectedLocation}"]`).innerText.trim();
+        }
+    }
+
+    // Attach event listeners to the radio buttons
+    pickupLocations.forEach(location => {
+        location.addEventListener('change', handleAddressSelection);
+    });
+
+    // Function to validate and set the address before submitting the order
+    function setAddressDetails() {
+        const selectedLocation = document.querySelector('input[name="pickup_location"]:checked').value;
+
+        if (selectedLocation === 'new_address') {
+            selectedAddress = newAddressField.value.trim();
+
+            if (!selectedAddress) {
+                alert("Please enter a new address.");
+                return false;  // Stop the form submission if the address is empty
+            }
+
+            // Call to create a new address
+            frappe.call({
+                method: "frappe.client.insert",
+                args: {
+                    doc: {
+                        doctype: "Address",
+                        address_line1: selectedAddress,
+                        city: "City Name",  // Add more fields if required
+                        address_type: "Shipping",  // or "Billing" depending on the context
+                        links: [{
+                            link_doctype: "Customer",
+                            link_name: "{{ customer_name }}"  // Replace with the actual customer name or variable
+                        }]
+                    }
+                },
+                callback: function(response) {
+                    if (response.message) {
+                        // Assign the newly created address to the order
+                        console.log("New address created:", response.message.name);
+                        // Here, you'd assign response.message.name or similar to the order's shipping/billing address
+                        order.shipping_address = response.message.name;  // Replace with actual logic
+                        document.getElementById('submit_button').click();  // Retry form submission
+                    }
+                }
+            });
+            return false;  // Stop initial form submission, will be retried in callback
+        } else {
+            // Use the selected address from the predefined list
+            console.log("Selected existing address:", selectedAddress);
+            order.shipping_address = selectedAddress;  // Replace with actual logic
+            return true;
+        }
+    }
+
+    // Ensure the function runs when the order is being completed
+    document.getElementById('submit_button').addEventListener('click', function(event) {
+        if (!setAddressDetails()) {
+            event.preventDefault();  // Prevent form submission if the address is invalid
+        }
+    });
+});

@@ -1,0 +1,440 @@
+		
+		
+def sit_to_main_server():
+	"""Script for real-time communication with main server"""
+	
+	
+	src_db_host = "127.0.0.1"
+	src_db_port = 3306
+	src_db_user = "root"
+	src_db_password = ""
+	src_db_name = ""
+
+	dest_db_host = "192.168.3.101:81"
+	dest_db_port = 3306
+	dest_db_user = "root"
+	dest_db_password = ""
+	dest_db_name = ""
+
+
+	src_pool = mysql.connector.pooling.MySQLConnectionPool(
+	pool_name = "src_pool",
+	pool_size = 5,
+	user = src_db_user,
+	password = src_db_password,
+	host = src_db_host,
+	database = src_db_name,
+	connect_timeout = 3600
+	)
+
+	dest_pool = mysql.connector.pooling.MySQLConnectionPool(
+	pool_name = "dest_pool",
+	pool_size = 5,
+	user = dest_db_user,
+	password = dest_db_password,
+	host = dest_db_host,
+	database = dest_db_name,
+	connect_timeout = 3600
+	)
+
+	try:
+		src_conn = src_pool.get_connection()
+	except mysql.connector.Error as e:
+		print(f"Error getting connection from source: {e}")
+		sys.exit(1)
+
+	try:
+		dest_conn = dest_pool.get_connection()
+	except mysql.connector.Error as e:
+		print(f"Error connecting with destination: {e}")
+		sys.exit(1)
+
+	src_cursor = src_conn.cursor()
+	src_cursor.execute("SELECT * FROM `tabSales Invoice Item` ORDER BY `creation` DESC LIMIT 50")
+	rows = src_cursor.fetchall()
+	#print(rows)
+
+	dest_cursor = dest_conn.cursor()
+	
+	for row in rows:
+		dest_cursor.execute(f"SELECT * FROM `tabSales Invoice Item` ORDER BY `creation` DESC LIMIT 100")
+		result = dest_cursor.fetchall()
+		if result is not None:
+			dest_cursor.execute(f"INSERT INTO `tabSales Invoice Item` VALUES ({','.join(['%s']*len(row))})", row)
+			dest_conn.commit()
+			print(f"Skipping existing records: {row[0]}")
+		else:
+			try:
+				dest_cursor.execute(f"INSERT INTO `tabSales Invoice Item` VALUES ({','.join(['%s']*len(row))})", row)
+				dest_conn.commit()
+				print(f"Record added: {row[0]}")
+			except mysql.connector.Error as e:
+				print(f"Error inserting record {[0]}: {e}")
+				dest_conn.rollback()
+				continue
+	
+	src_conn.close()
+	dest_conn.close()
+
+	dest_conn = None
+
+	if dest_conn is not None:
+		dest.conn.commit()
+		print("Changes committed to destination database")
+	
+	
+	
+def sip_to_main_server():
+	"""Script for real-time communication with main server"""
+	
+	
+	src_db_host = "127.0.0.1"
+	src_db_port = 3306
+	src_db_user = "root"
+	src_db_password = ""
+	src_db_name = ""
+
+	dest_db_host = "192.168.3.101:81"
+	dest_db_port = 3306
+	dest_db_user = "root"
+	dest_db_password = ""
+	dest_db_name = ""
+	
+
+	src_pool = mysql.connector.pooling.MySQLConnectionPool(
+	pool_name = "src_pool",
+	pool_size = 5,
+	user = src_db_user,
+	password = src_db_password,
+	host = src_db_host,
+	database = src_db_name,
+	connect_timeout = 3600
+	)
+
+	dest_pool = mysql.connector.pooling.MySQLConnectionPool(
+	pool_name = "dest_pool",
+	pool_size = 5,
+	user = dest_db_user,
+	password = dest_db_password,
+	host = dest_db_host,
+	database = dest_db_name,
+	connect_timeout = 3600
+	)
+
+	try:
+		src_conn = src_pool.get_connection()
+	except mysql.connector.Error as e:
+		print(f"Error getting connection from source: {e}")
+		sys.exit(1)
+
+	try:
+		dest_conn = dest_pool.get_connection()
+	except mysql.connector.Error as e:
+		print(f"Error connecting with destination: {e}")
+		sys.exit(1)
+
+	src_cursor = src_conn.cursor()
+	src_cursor.execute("SELECT * FROM `tabSales Invoice Payment` ORDER BY `creation` DESC LIMIT 50")
+	rows = src_cursor.fetchall()
+	#print(rows)
+
+	dest_cursor = dest_conn.cursor()
+	
+	for row in rows:
+		dest_cursor.execute(f"SELECT * FROM `tabSales Invoice Payment` ORDER BY `creation` DESC LIMIT 100")
+		result = dest_cursor.fetchall()
+		if result is not None:
+			dest_cursor.execute(f"INSERT INTO `tabSales Invoice Payment` VALUES ({','.join(['%s']*len(row))})", row)
+			dest_conn.commit()
+			print(f"Skipping existing records: {row[0]}")
+		else:
+			try:
+				dest_cursor.execute(f"INSERT INTO `tabSales Invoice Payment` VALUES ({','.join(['%s']*len(row))})", row)
+				dest_conn.commit()
+				print(f"Record added: {row[0]}")
+			except mysql.connector.Error as e:
+				print(f"Error inserting record {[0]}: {e}")
+				dest_conn.rollback()
+				continue
+	
+	src_conn.close()
+	dest_conn.close()
+
+	dest_conn = None
+
+	if dest_conn is not None:
+		dest.conn.commit()
+		print("Changes committed to destination database")
+
+
+
+def loyalty_to_main_server():
+	"""Script for real-time communication with main server"""
+	
+	
+	src_db_host = "127.0.0.1"
+	src_db_port = 3306
+	src_db_user = "root"
+	src_db_password = ""
+	src_db_name = ""
+
+	dest_db_host = "192.168.3.101:81"
+	dest_db_port = 3306
+	dest_db_user = "root"
+	dest_db_password = ""
+	dest_db_name = ""
+	
+
+	src_pool = mysql.connector.pooling.MySQLConnectionPool(
+	pool_name = "src_pool",
+	pool_size = 5,
+	user = src_db_user,
+	password = src_db_password,
+	host = src_db_host,
+	database = src_db_name,
+	connect_timeout = 3600
+	)
+
+	dest_pool = mysql.connector.pooling.MySQLConnectionPool(
+	pool_name = "dest_pool",
+	pool_size = 5,
+	user = dest_db_user,
+	password = dest_db_password,
+	host = dest_db_host,
+	database = dest_db_name,
+	connect_timeout = 3600
+	)
+
+	try:
+		src_conn = src_pool.get_connection()
+	except mysql.connector.Error as e:
+		print(f"Error getting connection from source: {e}")
+		sys.exit(1)
+
+	try:
+		dest_conn = dest_pool.get_connection()
+	except mysql.connector.Error as e:
+		print(f"Error connecting with destination: {e}")
+		sys.exit(1)
+
+	src_cursor = src_conn.cursor()
+	src_cursor.execute("SELECT * FROM `tabLoyalty Point Entry` ORDER BY `creation` DESC LIMIT 10")
+	rows = src_cursor.fetchall()
+	#print(rows)
+
+	dest_cursor = dest_conn.cursor()
+	
+	for row in rows:
+		dest_cursor.execute(f"SELECT * FROM `tabLoyalty Point Entry` ORDER BY `creation` DESC LIMIT 50")
+		result = dest_cursor.fetchall()
+		if result is not None:
+			dest_cursor.execute(f"INSERT INTO `tabLoyalty Point Entry` VALUES ({','.join(['%s']*len(row))})", row)
+			dest_conn.commit()
+			print(f"Skipping existing records: {row[0]}")
+		else:
+			try:
+				dest_cursor.execute(f"INSERT INTO `tabLoyalty Point Entry` VALUES ({','.join(['%s']*len(row))})", row)
+				dest_conn.commit()
+				print(f"Record added: {row[0]}")
+			except mysql.connector.Error as e:
+				print(f"Error inserting record {[0]}: {e}")
+				dest_conn.rollback()
+				continue
+	
+	src_conn.close()
+	dest_conn.close()
+
+	dest_conn = None
+
+	if dest_conn is not None:
+		dest.conn.commit()
+		print("Changes committed to destination database")
+
+
+
+def gle_to_main_server():
+	"""Script for real-time communication with main server"""
+	
+	
+	src_db_host = "127.0.0.1"
+	src_db_port = 3306
+	src_db_user = "root"
+	src_db_password = ""
+	src_db_name = ""
+
+	dest_db_host = "192.168.3.101:81"
+	dest_db_port = 3306
+	dest_db_user = "root"
+	dest_db_password = ""
+	dest_db_name = ""
+
+
+	src_pool = mysql.connector.pooling.MySQLConnectionPool(
+	pool_name = "src_pool",
+	pool_size = 5,
+	user = src_db_user,
+	password = src_db_password,
+	host = src_db_host,
+	database = src_db_name,
+	connect_timeout = 3600
+	)
+
+	dest_pool = mysql.connector.pooling.MySQLConnectionPool(
+	pool_name = "dest_pool",
+	pool_size = 5,
+	user = dest_db_user,
+	password = dest_db_password,
+	host = dest_db_host,
+	database = dest_db_name,
+	connect_timeout = 3600
+	)
+
+	try:
+		src_conn = src_pool.get_connection()
+	except mysql.connector.Error as e:
+		print(f"Error getting connection from source: {e}")
+		sys.exit(1)
+
+	try:
+		dest_conn = dest_pool.get_connection()
+	except mysql.connector.Error as e:
+		print(f"Error connecting with destination: {e}")
+		sys.exit(1)
+
+	src_cursor = src_conn.cursor()
+	src_cursor.execute("SELECT * FROM `tabGL Entry` ORDER BY `creation` DESC LIMIT 100")
+	rows = src_cursor.fetchall()
+	#print(rows)
+
+	dest_cursor = dest_conn.cursor()
+	
+	for row in rows:
+		dest_cursor.execute(f"SELECT * FROM `tabGL Entry` ORDER BY `creation` DESC LIMIT 250")
+		result = dest_cursor.fetchall()
+		if result is not None:
+			#dest_cursor.execute(f"INSERT INTO `tabGL Entry` VALUES ({','.join(['%s']*len(row))})", row)
+			#dest_conn.commit()
+			print(f"Skipping existing records: {row[0]}")
+		else:
+			try:
+				dest_cursor.execute(f"INSERT INTO `tabGL Entry` VALUES ({','.join(['%s']*len(row))})", row)
+				dest_conn.commit()
+				print(f"Record added: {row[0]}")
+			except mysql.connector.Error as e:
+				print(f"Error inserting record {[0]}: {e}")
+				dest_conn.rollback()
+				continue
+	
+	src_conn.close()
+	dest_conn.close()
+
+	dest_conn = None
+
+	if dest_conn is not None:
+		dest.conn.commit()
+		print("Changes committed to destination database")
+	
+
+
+
+def sle_to_main_server():
+	"""Script for real-time communication with main server"""
+	
+	
+	src_db_host = "127.0.0.1"
+	src_db_port = 3306
+	src_db_user = "root"
+	src_db_password = ""
+	src_db_name = ""
+
+	dest_db_host = "192.168.3.101:81"
+	dest_db_port = 3306
+	dest_db_user = "root"
+	dest_db_password = ""
+	dest_db_name = ""
+	
+
+	src_pool = mysql.connector.pooling.MySQLConnectionPool(
+	pool_name = "src_pool",
+	pool_size = 5,
+	user = src_db_user,
+	password = src_db_password,
+	host = src_db_host,
+	database = src_db_name,
+	connect_timeout = 3600
+	)
+
+	dest_pool = mysql.connector.pooling.MySQLConnectionPool(
+	pool_name = "dest_pool",
+	pool_size = 5,
+	user = dest_db_user,
+	password = dest_db_password,
+	host = dest_db_host,                                                                                                                                                 
+	database = dest_db_name,
+	connect_timeout = 3600
+	)
+
+	try:
+		src_conn = src_pool.get_connection()
+	except mysql.connector.Error as e:
+		print(f"Error getting connection from source: {e}")
+		sys.exit(1)
+
+	try:
+		dest_conn = dest_pool.get_connection()
+	except mysql.connector.Error as e:
+		print(f"Error connecting with destination: {e}")
+		sys.exit(1)
+
+	src_cursor = src_conn.cursor()
+	src_cursor.execute("SELECT * FROM `tabStock Ledger Entry` ORDER BY `creation` DESC LIMIT 100")
+	#src_cursor.execute("SELECT * FROM `tabStock Ledger Entry` WHERE `voucher_type` = 'Purchase Receipt' ORDER BY `creation` DESC LIMIT 5")
+	rows = src_cursor.fetchall()
+	#print(rows)
+
+	dest_cursor = dest_conn.cursor()
+	
+	for row in rows:
+		dest_cursor.execute(f"SELECT * FROM `tabStock Ledger Entry` ORDER BY `creation` DESC LIMIT 250")
+		#dest_cursor.execute(f"SELECT * FROM `tabStock Ledger Entry` WHERE `voucher_type` = 'Purchase Receipt' ORDER BY `creation` DESC LIMIT 5")
+		result = dest_cursor.fetchall()
+		if result is not None:
+			#dest_cursor.execute(f"INSERT INTO `tabStock Ledger Entry` VALUES ({','.join(['%s']*len(row))})", row)
+			#dest_conn.commit()
+			print(f"Skipping existing records: {row[0]}")
+		else:
+			try:
+				dest_cursor.execute(f"INSERT INTO `tabStock Ledger Entry` VALUES ({','.join(['%s']*len(row))})", row)
+				dest_conn.commit()
+				print(f"Record added: {row[0]}")
+			except mysql.connector.Error as e:
+				print(f"Error inserting record {[0]}: {e}")
+				dest_conn.rollback()
+				continue
+	
+	src_conn.close()
+	dest_conn.close()
+
+	dest_conn = None
+
+	if dest_conn is not None:
+		dest.conn.commit()
+		print("Changes committed to destination database")
+		
+		
+
+"Authorization%20token%20ded501ef34ee54d:f7b5ae1520fcb43"
+
+http://127.0.0.1:8000/api/method/erpnext.accounts.doctype.sales_invoice.apitwo.get_sales_invoices?login&usr=administrator&pwd=@Samuelvictor2021
+
+
+
+UPDATE `_f175a306ce4c7c5e`.`tabSales Invoice`
+SET
+`set_posting_time`="1"
+WHERE `status` = "Draft"
+AND `paid_amount` != "0.00"
+ORDER BY `creation` 
+ASC LIMIT 2000;
+
+
